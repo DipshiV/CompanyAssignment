@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Environment</title>
+  <style>
+    body {
+      margin: 0;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <script src="path/to/three.min.js"></script>
+  <script src="path/to/OrbitControls.js"></script>
+  <script>
+    // Get the canvas element
+const canvas = document.querySelector('canvas');
+
+// Set up Three.js
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ canvas });
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+// Set up camera position
+camera.position.set(0, 1.6, 3); //  average eye level height is 1.6 meters
+camera.lookAt(0, 1.6, 0);
+
+// Add ambient light
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+
+// Add directional light
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(0, 5, 0);
+scene.add(directionalLight);
+
+// Create and load the room 3D model
+const loader = new THREE.GLTFLoader();
+loader.load('path/to/room_model.glb', function(gltf) {
+  const roomModel = gltf.scene;
+  scene.add(roomModel);
+});
+
+// Add a table 3D model
+loader.load('path/to/table_model.glb', function(gltf) {
+  const tableModel = gltf.scene;
+  // Adjust the table's position and rotation as needed
+  tableModel.position.set(1, 0, -1);
+  tableModel.rotation.set(0, Math.PI / 4, 0);
+  scene.add(tableModel);
+});
+
+// Add a chair 3D model
+loader.load('path/to/chair_model.glb', function(gltf) {
+  const chairModel = gltf.scene;
+  // Adjust the chair's position and rotation as needed
+  chairModel.position.set(-1, 0, -1);
+  chairModel.rotation.set(0, Math.PI / 2, 0);
+  scene.add(chairModel);
+});
+
+// Set up OrbitControls for navigation
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+// Function to handle window resizing
+function onWindowResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+window.addEventListener('resize', onWindowResize);
+
+// Render the scene
+function animate() {
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+animate();
+
+  </script>
+  <script src="path/to/main.js"> 
+  </script>
+</body>
+</html>
